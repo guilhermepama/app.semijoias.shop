@@ -28,25 +28,6 @@ app.use('/css', express.static('./css'));
 // Referenciar pasta imagens
 app.use('/imagens', express.static('./imagens'));
 
-// Referenciar /appcatalogo como root
-const path = require('path');
-const express = require('express');
-const app = express();
-
-// Servindo arquivos estáticos com o prefixo /appcatalogo
-app.use('/appcatalogo', express.static(path.join(__dirname, 'public')));
-
-
-// Logica da aplicação continua aqui
-// Exemplo:
-app.get('/appcatalogo', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
-module.exports = app;
-
-
-
 // Configuração do express-handlebars
 app.engine('handlebars', engine({
     helpers: {
@@ -161,16 +142,16 @@ app.get('/remover/:codigo&:imagem', function(req, res){
     // Tratamento de exceçãp
     try {
     //SQL
-    let sql = `DELETE FROM produtos WHERE codigo = ${req.params.codigo}`;
+    let sql = `DELETE FROM produtos WHERE codigo = ?`;
 
     // Executar o comando SQL
-    conexao.query(sql, function(erro, retorno){
+    conexao.query(sql, [req.params.codigo], function (erro, retorno) {
         // Caso falhe o comando SQL
         if (erro) throw erro;
 
         // Caso o comando SQL funcione
-        fs.unlink(__dirname+'/imagens/'+req.params.imagem, (erro_imagem)=>{
-            console.log('Falha ao remover imagem');
+        fs.unlink(__dirname + '/imagens/' + req.params.imagem, (erro_imagem) => {
+            if (erro_imagem) console.log('Falha ao remover imagem:', erro_imagem.message);
         });
     } );
 
