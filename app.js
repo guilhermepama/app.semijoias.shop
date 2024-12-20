@@ -223,7 +223,7 @@ app.post('/editar', function(req, res) {
                 if (erro_imagem) console.log('Falha ao remover imagem antiga:', erro_imagem.message);
             });
 
-            // Mover nova imagem
+            // Mover nova imagem 
             const caminhoNovo = `${__dirname}/imagens/${novoNomeImagem}`;
             imagem.mv(caminhoNovo, (erro_mv) => {
                 if (erro_mv) {
